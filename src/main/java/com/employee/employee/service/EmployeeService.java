@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import com.employee.employee.entity.Employee;
 import com.employee.employee.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
-
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,11 +25,19 @@ public class EmployeeService {
     }
 
     public Employee updateEmployee(Long id, Employee employee) {
-        Employee employeeToUpdate = employeeRepository.findById(id).get();
-        employeeToUpdate.setName(employee.getName());
-        employeeToUpdate.setEmail(employee.getEmail());
-        employeeToUpdate.setPhone(employee.getPhone());
-        employeeToUpdate.setDepartment(employee.getDepartment());
-        return employeeRepository.save(employeeToUpdate);
+        Optional<Employee> employeeToUpdate = employeeRepository.findById(id);
+        if (employeeToUpdate.isPresent()){
+            Employee existingEmployee = employeeToUpdate.get();
+            existingEmployee.setName(employee.getName());
+            existingEmployee.setEmail(employee.getEmail());
+            existingEmployee.setPhone(employee.getPhone());
+            existingEmployee.setDepartment(employee.getDepartment());
+        return employeeRepository.save(existingEmployee);
+        }
+        return null;
+    }
+
+    public Employee getEmployee(Long id) {
+        return employeeRepository.findById(id).orElse(null);
     }
 }

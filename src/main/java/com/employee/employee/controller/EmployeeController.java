@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -44,8 +45,23 @@ public class EmployeeController {
         }
     }
 
-    @PostMapping("/newemployee/{id}")
-    public Employee updateEmployee(@PathVariable Long id, @RequestBody Employee employee) {
-        return employeeService.updateEmployee(id, employee);
+    @PatchMapping("/editemployee/{id}")
+    public ResponseEntity<?> updateEmployee(@PathVariable Long id, @RequestBody Employee employee) {
+        Employee updatedEmployee = employeeService.updateEmployee(id, employee);
+        if (updatedEmployee == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
+        }
+    }
+
+    @GetMapping("/getemployee/{id}")
+    public ResponseEntity<?> getEmployee(@PathVariable Long id) {
+       Employee employee = employeeService.getEmployee(id);
+         if (employee == null) {
+              return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+         } else {
+              return new ResponseEntity<>(employee, HttpStatus.OK);
+         }
     }
 }
